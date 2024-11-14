@@ -13,13 +13,16 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Customer{
-  id String @id @default(auto()) @map("_id") @db.ObjectId
-  name String
-  email String
-  status Boolean
-  created_at DateTime ? @default(now())
-  updated_at DateTime ? @default(now())
+model Customer {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  name       String
+  email      String   @unique
+  password   String
+  cpf        String   @unique
+  status     Boolean
+  cellphone  String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
   @@map("customers")
 }

@@ -8,7 +8,7 @@ class DeleteCustomerService{
 
     async execute({id}: DeleteCustomerProps){
         if(!id){
-            throw new Error("SOlicitação invaida")
+            throw new Error("Solicitação invaida")
         }
 
         const findCustomer = await prismaCLient.customer.findFirst({
