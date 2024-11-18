@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -25,4 +19,81 @@ model Customer {
   updated_at DateTime @updatedAt
 
   @@map("customers")
+}
+
+model Product {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  description String
+  price       Float
+  category    String
+  brand       String
+  stock       Int
+  min_stock   Int
+  images      String[]
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  @@map("products")
+}
+
+
+
+model SaleProduct {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  sale_id    String   @db.ObjectId
+  product_id String   @db.ObjectId
+  quantity   Int
+  price      Float
+
+  @@map("sale_products")
+}
+
+model Sale {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  user_id        String   @db.ObjectId
+  products       ProductInfo[]
+  total_price    Float
+  payment_status String
+  shipment_status String
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
+
+  @@map("sales")
+}
+
+type ProductInfo {
+  product_id String   @db.ObjectId
+  quantity   Int
+  price      Float
+}
+
+model InventoryLog {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  product_id     String   @db.ObjectId
+  change_type    String
+  quantity       Int
+  note           String
+  created_at     DateTime @default(now())
+
+  @@map("inventory_logs")
+}
+
+model Session {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  user_id    String   @db.ObjectId
+  token      String
+  expires_at DateTime
+  created_at DateTime @default(now())
+
+  @@map("sessions")
+}
+
+model Category {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  description String
+  created_at  DateTime @default(now())
+
+  @@map("categories")
 }

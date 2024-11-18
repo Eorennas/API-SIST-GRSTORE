@@ -1,5 +1,6 @@
-import { FastifyRequest, FastifyReply } from 'fastify';
+import fastify, { FastifyRequest, FastifyReply } from 'fastify';
 import { LoginCustomerService } from '../services/LoginCustomerService';
+import { app } from '../server';
 
 class LoginCustomerController {
     async handle(request: FastifyRequest, reply: FastifyReply) {
@@ -9,7 +10,7 @@ class LoginCustomerController {
         };
 
         const loginCustomerService = new LoginCustomerService();
-        const result = await loginCustomerService.execute({ email, password });
+        const result = await loginCustomerService.execute({ email, password }, app);
 
         reply.send(result);
     }

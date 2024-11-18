@@ -1,15 +1,18 @@
-import Fastify from 'fastify';
+import Fastify, { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import cors from '@fastify/cors';
 import { routes } from './router';
+import jwt from '@fastify/jwt';
 
-const app = Fastify({ logger: true });
 
-// Configuração de CORS
-app.register(cors, {
-    origin: true, // Permite todas as origens; ajuste conforme necessário
-    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Especifica métodos permitidos
-});
 
+export const app = Fastify({ logger: true });
+const secretKey = 'teste';
+
+// Registrar o plugin JWT
+app.register(jwt, {
+    secret: 'teste', // Substitua pela sua chave secreta
+  });
+  
 // Registra as rotas
 app.register(routes);
 
@@ -22,6 +25,20 @@ app.setErrorHandler((error, request, reply) => {
     });
 });
 
+app.decorate(
+    'authenticate',
+    async function (
+      this: FastifyInstance,
+      request: FastifyRequest,
+      reply: FastifyReply
+    ) {
+      try {
+        await request.jwtVerify(); // Verifica o token JWT
+      } catch (err) {
+        reply.status(401).send({ message: 'Token inválido ou ausente' });
+      }
+    }
+  );
 // Função para iniciar o servidor
 const start = async () => {
     try {
