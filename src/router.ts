@@ -63,9 +63,9 @@ export async function routes(fastify: FastifyInstance, options: FastifyPluginOpt
   });
 
   // Rota para criar uma venda
-  fastify.post("/sales", async (request: FastifyRequest, reply: FastifyReply) => {
-      return new CreateSaleController().handle(request, reply);
+  fastify.post("/sales", { preHandler: [fastify.authenticate] }, (request: FastifyRequest, reply: FastifyReply) => {
+    return new CreateSaleController().handle(request, reply);
   });
 
-  
+
 }
