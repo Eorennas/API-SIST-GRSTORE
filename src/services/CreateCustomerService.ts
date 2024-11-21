@@ -1,6 +1,7 @@
 import prismaClient from "../prisma";
 import bcrypt from "bcrypt";
 
+
 interface CreateCustomerProps {
     name: string;
     email: string;

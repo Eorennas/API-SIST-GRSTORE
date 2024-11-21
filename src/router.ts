@@ -9,9 +9,12 @@ import { GetCategoryController } from './controllers/GetCategoryController';
 import { CreateProductController } from './controllers/ProductCustomerController';
 import { ListProductController } from './controllers/ListProductController';
 import { CreateSaleController } from './controllers/CreateSaleController';
+import { InventoryLogController } from './controllers/InventoryLogCustomerController';
 
 
 export async function routes(fastify: FastifyInstance, options: FastifyPluginOptions) {
+  const inventoryLogController = new InventoryLogController();
+
   // Rota para login
   fastify.post("/login", async (request: FastifyRequest, reply: FastifyReply) => {
     return new LoginCustomerController().handle(request, reply);
@@ -67,5 +70,14 @@ export async function routes(fastify: FastifyInstance, options: FastifyPluginOpt
     return new CreateSaleController().handle(request, reply);
   });
 
+  // Rota para criar um log de estoque
+  fastify.post("/inventory-logs", async (request: FastifyRequest, reply: FastifyReply) => {
+    return inventoryLogController.createLog(request, reply);
+  });
+
+  // Rota para listar todos os logs de estoque
+  fastify.get("/inventory-logs", async (request: FastifyRequest, reply: FastifyReply) => {
+    return inventoryLogController.listLogs(request, reply);
+  });
 
 }
