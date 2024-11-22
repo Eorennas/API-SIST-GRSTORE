@@ -1,14 +1,8 @@
+import { InventoryLogProps } from "../utils/interfaces";
 import prismaClient from "../prisma";
 
-interface InventoryLogProps {
-  product_id: string;
-  change_type: "Entrada" | "Saída";
-  quantity: number;
-  note: string;
-}
-
 class InventoryLogService {
-  async execute({ product_id, change_type, quantity, note }: InventoryLogProps) {
+  async save({ product_id, change_type, quantity, note }: InventoryLogProps) {
     // Verifica se o produto existe
     const product = await prismaClient.product.findUnique({
       where: { id: product_id },

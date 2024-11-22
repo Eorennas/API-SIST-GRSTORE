@@ -1,83 +1,96 @@
 import { FastifyInstance, FastifyPluginOptions, FastifyRequest, FastifyReply } from 'fastify';
-import { CreateCustomerController } from './controllers/CreateCustomerController';
-import { ListCustomerController } from './controllers/ListCustomerController';
-import { DeleteCustomerController } from './controllers/DeleteCustomerController';
-import { LoginCustomerController } from './controllers/LoginCustomerController';
-import { CategoryCustomerController } from './controllers/CategoryCustomerController';
-import { ListCategoriesController } from './controllers/ListCategoriesController';
-import { GetCategoryController } from './controllers/GetCategoryController';
-import { CreateProductController } from './controllers/ProductCustomerController';
-import { ListProductController } from './controllers/ListProductController';
-import { CreateSaleController } from './controllers/CreateSaleController';
-import { InventoryLogController } from './controllers/InventoryLogCustomerController';
-
+import { CustomerController } from './controllers/CustomerController';
+import { LoginController } from './controllers/LoginController';
+import { InventoryLogController } from './controllers/InventoryLogController';
+import { CategoryController } from './controllers/CategoryController'
+import { AddressController } from './controllers/AddressController';
+import { ProductController } from './controllers/ProductController';
+import { SaleController } from './controllers/SaleController';
 
 export async function routes(fastify: FastifyInstance, options: FastifyPluginOptions) {
-  const inventoryLogController = new InventoryLogController();
 
-  // Rota para login
+   //LOGIN
   fastify.post("/login", async (request: FastifyRequest, reply: FastifyReply) => {
-    return new LoginCustomerController().handle(request, reply);
+    return new LoginController().handle(request, reply);
   });
 
-  // Rota para criar cliente
-  fastify.post("/customer", async (request: FastifyRequest, reply: FastifyReply) => {
-    return new CreateCustomerController().handle(request, reply);
+   //CUSTOMERS
+  fastify.post("/customers", async (request: FastifyRequest, reply: FastifyReply) => {
+    return new CustomerController().save(request, reply);
   });
-
-  // Rota para listar clientes (autenticada)
+  fastify.put("/customers", { preHandler: [fastify.authenticate] } ,async (request: FastifyRequest, reply: FastifyReply) => {
+    return new CustomerController().update(request, reply);
+  });
   fastify.get("/customers", { preHandler: [fastify.authenticate] }, async (request: FastifyRequest, reply: FastifyReply) => {
-    return new ListCustomerController().handle(request, reply);
+    return new CustomerController().list(request, reply);
+  });
+  fastify.delete("/customers/:id", { preHandler: [fastify.authenticate] }, async (request: FastifyRequest, reply: FastifyReply) => {
+    return new CustomerController().delete(request, reply);
+  });
+  fastify.get("/customers/:id/sales", { preHandler: [fastify.authenticate] }, async (request: FastifyRequest, reply: FastifyReply) => {
+    return new SaleController().listByClient(request, reply);
   });
 
-  // Rota para deletar cliente (autenticada)
-  fastify.delete("/customer", { preHandler: [fastify.authenticate] }, async (request: FastifyRequest, reply: FastifyReply) => {
-    return new DeleteCustomerController().handle(request, reply);
+
+  //ADDRESS
+  fastify.post("/address", async (request: FastifyRequest, reply: FastifyReply) => {
+    return new AddressController().create(request, reply);
+  });
+  fastify.put("/address",{ preHandler: [fastify.authenticate] } ,async (request: FastifyRequest, reply: FastifyReply) => {
+    return new AddressController().update(request, reply);
+  });
+  fastify.get("/address", { preHandler: [fastify.authenticate] }, async (request: FastifyRequest, reply: FastifyReply) => {
+    return new AddressController().list(request, reply);
+  });
+  fastify.delete("/address/:id", { preHandler: [fastify.authenticate] }, async (request: FastifyRequest, reply: FastifyReply) => {
+    return new AddressController().delete(request, reply);
   });
 
-  // Rota para criar categoria
+
+   //CATEGORY
   fastify.post("/categories", { preHandler: [fastify.authenticate] }, async (request: FastifyRequest, reply: FastifyReply) => {
-    return new CategoryCustomerController().handle(request, reply);
+    return new CategoryController().create(request, reply);
   });
-
-  // Rota para listar todas as categorias
+  fastify.put("/categories", { preHandler: [fastify.authenticate] }, async (request: FastifyRequest, reply: FastifyReply) => {
+    return new CategoryController().update(request, reply);
+  });
   fastify.get("/categories", { preHandler: [fastify.authenticate] }, async (request: FastifyRequest, reply: FastifyReply) => {
-    return new ListCategoriesController().handle(request, reply);
+    return new CategoryController().list(request, reply);
   });
-
-  // Rota para obter uma única categoria pelo ID
   fastify.get("/categories/:id", { preHandler: [fastify.authenticate] }, async (request: FastifyRequest, reply: FastifyReply) => {
-    return new GetCategoryController().handle(request, reply);
+    return new CategoryController().get(request, reply);
   });
 
-  // Rota para criar produto
+  //PRODUCT
   fastify.post("/products", { preHandler: [fastify.authenticate] }, async (request: FastifyRequest, reply: FastifyReply) => {
-    return new CreateProductController().handle(request, reply);
+    return new ProductController().create(request, reply);
   });
-
-  // Rota para listar todos os produtos
+  fastify.put("/products", { preHandler: [fastify.authenticate] }, async (request: FastifyRequest, reply: FastifyReply) => {
+    return new ProductController().update(request, reply);
+  });
   fastify.get("/products", { preHandler: [fastify.authenticate] }, async (request: FastifyRequest, reply: FastifyReply) => {
-    return new ListProductController().listAll(request, reply);
+    return new ProductController().list(request, reply);
   });
-
-  // Rota para obter um único produto pelo ID
   fastify.get("/products/:id", { preHandler: [fastify.authenticate] }, async (request: FastifyRequest, reply: FastifyReply) => {
-    return new ListProductController().getById(request, reply);
+    return new ProductController().get(request, reply);
   });
 
-  // Rota para criar uma venda
-  fastify.post("/sales", { preHandler: [fastify.authenticate] }, (request: FastifyRequest, reply: FastifyReply) => {
-    return new CreateSaleController().handle(request, reply);
+   //SALES
+  fastify.post("/sales", { preHandler: [fastify.authenticate] }, async (request: FastifyRequest, reply: FastifyReply) => {
+    return new SaleController().create(request, reply);
+  });
+  fastify.put("/sales", { preHandler: [fastify.authenticate] }, async (request: FastifyRequest, reply: FastifyReply) => {
+    return new SaleController().update(request, reply);
+  });
+  fastify.get("/sales", { preHandler: [fastify.authenticate] }, async (request: FastifyRequest, reply: FastifyReply) => {
+    return new SaleController().list(request, reply);
+  });
+  fastify.get("/sales/:id", { preHandler: [fastify.authenticate] }, async (request: FastifyRequest, reply: FastifyReply) => {
+    return new SaleController().getById(request, reply);
   });
 
-  // Rota para criar um log de estoque
-  fastify.post("/inventory-logs", async (request: FastifyRequest, reply: FastifyReply) => {
-    return inventoryLogController.createLog(request, reply);
+   //LOGS
+  fastify.get("/inventory-logs", { preHandler: [fastify.authenticate] }, async (request: FastifyRequest, reply: FastifyReply) => {
+    return new InventoryLogController().createLog(request, reply);
   });
-
-  // Rota para listar todos os logs de estoque
-  fastify.get("/inventory-logs", async (request: FastifyRequest, reply: FastifyReply) => {
-    return inventoryLogController.listLogs(request, reply);
-  });
-
 }

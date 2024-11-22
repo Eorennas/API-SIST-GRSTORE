@@ -15,6 +15,7 @@ model Customer {
   cpf        String   @unique
   status     Boolean
   cellphone  String
+  addresses  Address[]
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
@@ -26,7 +27,8 @@ model Product {
   name        String
   description String
   price       Float
-  category    String
+  categoryId  String
+  category    Category @relation(fields: [categoryId], references: [id])
   brand       String
   stock       Int
   min_stock   Int
@@ -49,18 +51,7 @@ model SaleProduct {
   @@map("sale_products")
 }
 
-model Sale {
-  id             String   @id @default(auto()) @map("_id") @db.ObjectId
-  user_id        String   @db.ObjectId
-  products       ProductInfo[]
-  total_price    Float
-  payment_status String
-  shipment_status String
-  created_at     DateTime @default(now())
-  updated_at     DateTime @updatedAt
 
-  @@map("sales")
-}
 
 type ProductInfo {
   product_id String   @db.ObjectId
@@ -94,6 +85,38 @@ model Category {
   name        String   @unique
   description String
   created_at  DateTime @default(now())
-
+  products Product[]
   @@map("categories")
+}
+
+model Sale {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  user_id        String   @db.ObjectId
+  products       ProductInfo[]
+  total_price    Float
+  payment_status String
+  shipment_status String
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
+  address_id     String?  @db.ObjectId
+  address        Address? @relation(fields: [address_id], references: [id]) // Relacionamento correto
+  @@map("sales")
+}
+
+model Address {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  user_id     String   @db.ObjectId
+  street      String
+  number      String
+  complement  String? 
+  city        String
+  state       String
+  zip_code    String
+  country     String
+  is_default  Boolean  @default(false)
+  is_deleted  Boolean  @default(false)
+  created_at  DateTime @default(now())
+  customer    Customer @relation(fields: [user_id], references: [id])
+  sales       Sale[]
+  @@map("addresses")
 }

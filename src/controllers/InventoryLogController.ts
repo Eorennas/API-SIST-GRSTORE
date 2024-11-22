@@ -2,7 +2,6 @@ import { FastifyRequest, FastifyReply } from 'fastify';
 import { InventoryLogService } from '../services/InventoryLogCustomerService';
 
 class InventoryLogController {
-  // Adicionar um log de estoque
   async createLog(request: FastifyRequest, reply: FastifyReply) {
     const { product_id, change_type, quantity, note } = request.body as {
       product_id: string;
@@ -14,7 +13,7 @@ class InventoryLogController {
     const inventoryLogService = new InventoryLogService();
 
     try {
-      const log = await inventoryLogService.execute({
+      const log = await inventoryLogService.save({
         product_id,
         change_type,
         quantity,
@@ -33,7 +32,6 @@ class InventoryLogController {
     }
   }
 
-  // Listar todos os logs de estoque
   async listLogs(request: FastifyRequest, reply: FastifyReply) {
     const inventoryLogService = new InventoryLogService();
 

@@ -2,15 +2,9 @@ import fastify from "fastify";
 import prismaClient from "../prisma";
 import bcrypt from "bcrypt";
 import jwt from '@fastify/jwt';
+import { LoginCustomerProps } from "../utils/interfaces";
 
-
-
-interface LoginCustomerProps {
-    email: string;
-    password: string;
-}
-
-class LoginCustomerService {
+class LoginService {
     async execute({ email, password }: LoginCustomerProps,  fastifyInstance: ReturnType<typeof fastify>) {
         // Verifica se o cliente existe
         const customer = await prismaClient.customer.findUnique({
@@ -39,4 +33,4 @@ class LoginCustomerService {
     }
 }
 
-export { LoginCustomerService };
+export { LoginService };

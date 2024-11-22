@@ -1,21 +1,11 @@
+import { CreateAddressProps } from "../utils/interfaces";
 import prismaClient from "../prisma";
+import { ObjectId } from "mongodb";
 
-interface CreateAddressProps {
-  customer_id: string;
-  street: string;
-  number: string;
-  complement?: string;
-  city: string;
-  state: string;
-  zip_code: string;
-  country: string;
-  is_default?: boolean;
-}
 
 class AddressService {
-  // Criar um novo endereço
   async createAddress({
-    customer_id,
+    user_id,
     street,
     number,
     complement,
@@ -25,20 +15,25 @@ class AddressService {
     country,
     is_default = false,
   }: CreateAddressProps) {
-    // Verifica se o cliente existe
+    // Certifique-se de que o ID do cliente é válido
+    if (!ObjectId.isValid(user_id)) {
+      throw new Error("ID de usuário inválido.");
+    }
+
+    // Buscar cliente
     const customer = await prismaClient.customer.findUnique({
-      where: { id: customer_id },
+      where: { id: new ObjectId(user_id).toString() },
     });
 
     if (!customer) {
       throw new Error("Cliente não encontrado.");
     }
 
-    // Se o novo endereço for padrão, atualiza os outros para não serem padrão
+    // Atualizar endereços padrão
     if (is_default) {
       await prismaClient.address.updateMany({
         where: {
-          customer_id,
+          user_id: new ObjectId(user_id).toString(),
           is_default: true,
         },
         data: {
@@ -47,10 +42,10 @@ class AddressService {
       });
     }
 
-    // Cria o novo endereço
+    // Criar endereço
     const address = await prismaClient.address.create({
       data: {
-        customer_id,
+        user_id: new ObjectId(user_id).toString(),
         street,
         number,
         complement,
@@ -65,10 +60,9 @@ class AddressService {
     return address;
   }
 
-  // Listar endereços de um cliente
-  async listAddresses(customer_id: string) {
+  async listAddresses(user_id: string) {
     const addresses = await prismaClient.address.findMany({
-      where: { customer_id },
+      where: { user_id },
     });
 
     if (addresses.length === 0) {
@@ -106,9 +100,11 @@ class AddressService {
 
   // Deletar um endereço
   async deleteAddress(id: string) {
-    const address = await prismaClient.address.delete({
+    const address = await prismaClient.address.update({
       where: { id },
+      data: { is_deleted: true },
     });
+    
 
     return address;
   }
