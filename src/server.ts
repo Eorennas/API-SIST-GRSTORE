@@ -14,7 +14,9 @@ app.register(jwt, {
   });
   
 // Registra as rotas
+app.register(cors);
 app.register(routes);
+
 
 // Manipulador global de erros
 app.setErrorHandler((error, request, reply) => {
