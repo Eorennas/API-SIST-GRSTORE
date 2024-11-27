@@ -52,14 +52,32 @@ class ProductService {
   }
 
   async list() {
-    const products = await prismaClient.product.findMany();
+    const products = await prismaClient.product.findMany({
+      include: {
+        category: true,
+      },
+    });
+
+    return products;
+  }
+
+  async listByCategory(categoryId:string) {
+    const products = await prismaClient.product.findMany({
+      include: {
+        category: true,
+      },
+      where: {categoryId}
+    });
 
     return products;
   }
 
   async get(id: string) {
     const product = await prismaClient.product.findUnique({
-      where: { id }
+      where: { id },
+      include: {
+        category: true,
+      },
     });
 
     if (!product) {

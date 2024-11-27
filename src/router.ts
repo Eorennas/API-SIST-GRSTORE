@@ -74,6 +74,10 @@ export async function routes(fastify: FastifyInstance, options: FastifyPluginOpt
   fastify.get("/products/:id", { preHandler: [fastify.authenticate] }, async (request: FastifyRequest, reply: FastifyReply) => {
     return new ProductController().get(request, reply);
   });
+  fastify.get("/products/category/:id", { preHandler: [fastify.authenticate] }, async (request: FastifyRequest, reply: FastifyReply) => {
+    return new ProductController().getByCategory(request, reply);
+  });
+  
 
    //SALES
   fastify.post("/sales", { preHandler: [fastify.authenticate] }, async (request: FastifyRequest, reply: FastifyReply) => {

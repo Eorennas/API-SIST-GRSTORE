@@ -56,6 +56,18 @@ class ProductController {
         }
     }
 
+    async getByCategory(request: FastifyRequest, reply: FastifyReply) {
+        const { id } = request.params as { id: string };
+        const productService = new ProductService();
+
+        try {
+            const product = await productService.listByCategory(id);
+            reply.status(200).send(product);
+        } catch (error: any) {
+            reply.status(400).send({ error: true, message: error.message });
+        }
+    }
+
     async update(request: FastifyRequest, reply: FastifyReply) {
         const { id } = request.params as { id: string };
         const { name, description, price, category, brand, stock, min_stock, images } = request.body as {
