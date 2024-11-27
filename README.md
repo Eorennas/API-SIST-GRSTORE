@@ -22,11 +22,14 @@ Este projeto é um sistema de **API DO SISTEMA DA GRSTORE**, desenvolvido para *
 
 ## Funcionalidades
 
-- **[Funcionalidade 1]**: Descrição breve da funcionalidade.
-- **[Funcionalidade 2]**: Descrição breve da funcionalidade.
-- **[Funcionalidade 3]**: Descrição breve da funcionalidade.
-- **[Outras funcionalidades]**: Caso existam mais funcionalidades, adicione aqui.
-
+- **Cadastro de Usuários**: Permite que os usuários se registrem e façam login na loja virtual.
+- **Gestão de Produtos**: CRUD (Criar, Ler, Atualizar, Deletar) de produtos na loja, com informações como nome, preço, descrição e imagem.
+- **Gestão de Categorias**: Permite organizar os produtos em categorias.
+- **Carrinho de Compras**: Funcionalidade que permite ao usuário adicionar produtos ao carrinho e realizar checkout.
+- **Gestão de Pedidos**: Visualização e gerenciamento de pedidos dos clientes, incluindo status de pagamento e envio.
+- **Autenticação e Autorização**: Sistema de login, registro e controle de acesso para usuários e administradores.
+- **Integração com Pagamento**: Simulação de integração para pagamentos (exemplo: Stripe ou PayPal).
+- **Busca e Filtros**: Permite aos usuários buscar e filtrar produtos por categorias, preço e nome.
 ---
 
 ## Instalação
