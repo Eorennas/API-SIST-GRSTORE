@@ -54,10 +54,10 @@ export async function routes(fastify: FastifyInstance, options: FastifyPluginOpt
   fastify.put("/categories", { preHandler: [fastify.authenticate] }, async (request: FastifyRequest, reply: FastifyReply) => {
     return new CategoryController().update(request, reply);
   });
-  fastify.get("/categories", { preHandler: [fastify.authenticate] }, async (request: FastifyRequest, reply: FastifyReply) => {
+  fastify.get("/categories", async (request: FastifyRequest, reply: FastifyReply) => {
     return new CategoryController().list(request, reply);
   });
-  fastify.get("/categories/:id", { preHandler: [fastify.authenticate] }, async (request: FastifyRequest, reply: FastifyReply) => {
+  fastify.get("/categories/:id",  async (request: FastifyRequest, reply: FastifyReply) => {
     return new CategoryController().get(request, reply);
   });
 
@@ -68,13 +68,13 @@ export async function routes(fastify: FastifyInstance, options: FastifyPluginOpt
   fastify.put("/products", { preHandler: [fastify.authenticate] }, async (request: FastifyRequest, reply: FastifyReply) => {
     return new ProductController().update(request, reply);
   });
-  fastify.get("/products", { preHandler: [fastify.authenticate] }, async (request: FastifyRequest, reply: FastifyReply) => {
+  fastify.get("/products", async (request: FastifyRequest, reply: FastifyReply) => {
     return new ProductController().list(request, reply);
   });
-  fastify.get("/products/:id", { preHandler: [fastify.authenticate] }, async (request: FastifyRequest, reply: FastifyReply) => {
+  fastify.get("/products/:id", async (request: FastifyRequest, reply: FastifyReply) => {
     return new ProductController().get(request, reply);
   });
-  fastify.get("/products/category/:id", { preHandler: [fastify.authenticate] }, async (request: FastifyRequest, reply: FastifyReply) => {
+  fastify.get("/products/category/:id", async (request: FastifyRequest, reply: FastifyReply) => {
     return new ProductController().getByCategory(request, reply);
   });
   
